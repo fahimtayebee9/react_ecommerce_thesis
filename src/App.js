@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./../node_modules/tailwindcss/base.css";
+import "./../node_modules/tailwindcss/components.css";
+import "./../node_modules/tailwindcss/utilities.css";
+import React from "react";
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import Categories from "./components/Categories";
+import AuthenticationSignIn from "./components/AuthenticationSignIn";
+import ProductsList from "./components/ProductsList";
+import Layout from "./components/Layout";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="categories" element={<Categories />} />
+            <Route
+              path="login"
+              element={<AuthenticationSignIn />}
+            />
+            <Route
+              path="products-list"
+              element={<ProductsList />}
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
