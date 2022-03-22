@@ -1,8 +1,8 @@
 const DB_ATTRIBUTES = {
     "type" : [
-        {"name" : "Men", "uid" : 1}, 
-        {"name" : "Women", "uid" : 2},
-        {"name" : "Kids", "uid" : 3} 
+        {"value" : "Men", "uid" : 1}, 
+        {"value" : "Women", "uid" : 2},
+        {"value" : "Kids", "uid" : 3} 
     ],
     "size" : [
         {"value" : 36, "uid" : 11},
@@ -14,7 +14,7 @@ const DB_ATTRIBUTES = {
         {"value" : 42, "uid" : 17},
     ],
     "brands" : [
-        {"value" : "Venturini", "uid" : 31},
+        {value : "Venturini", "uid" : 31},
         {"value" : "Maverick", "uid" : 32},
         {"value" : "Apex", "uid" : 33}
     ],
@@ -28,19 +28,11 @@ const DB_ATTRIBUTES = {
         {"value" : 2021, "uid" : 27},
     ],
     "category" : [
-        {"value" : "CASUAL SHOES", "uid" : 41},
-        {"value" : "CASUAL SHIRTS", "uid" : 42},
-        {"value" : "FORMAL SHIRTS", "uid" : 43},
-        {"value" : "FORMAL SHOES", "uid" : 44},
-        {"value" : "FORMAL PANTS", "uid" : 45},
-        {"value" : "FORMAL SWEATERS", "uid" : 46},
-        {"value" : "FORMAL JACKETS", "uid" : 47},
-        {"value" : "FORMAL ACCESSORIES", "uid" : 48},
-        {"value" : "CASUAL ACCESSORIES", "uid" : 49},
-        {"value" : "CASUAL SWEATERS", "uid" : 50},
-        {"value" : "CASUAL PANTS", "uid" : 51},
-        {"value" : "CASUAL JACKETS", "uid" : 52},
-        {"value" : "CASUAL SHOES", "uid" : 53},
+        {value : "CASUAL SHOES", "uid" : 41, "image": "/assets/images/91125A81_1_2.jpg"},
+        {"value" : "CASUAL SHIRTS", "uid" : 42, "image": "/assets/images/09602A42_1.jpg"},
+        {"value" : "FORMAL SHIRTS", "uid" : 43, "image": "/assets/images/09602A42_1.jpg"},
+        {"value" : "FORMAL SHOES", "uid" : 44, "image": "/assets/images/09602A42_1.jpg"},
+        {"value" : "FORMAL PANTS", "uid" : 45, "image": "/assets/images/09602A42_1.jpg"},
     ],
 }
 

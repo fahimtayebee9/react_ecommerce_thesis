@@ -1,7 +1,25 @@
 import { Outlet, Link } from "react-router-dom";
 import logo from "./../logo.svg";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Layout = () => {
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    const [isSignedIn, setIsSignedIn] = useState(null);
+    let navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setToken(null);
+    };
+
+    useEffect(() => {
+        if(token !== null) {
+            setIsSignedIn(true);
+            navigate("/cart");
+        }
+    }, [token]);
+
     return (
         <>
             <nav className="bg-white border-gray-200 px-2 sm:px-4 py-4 dark:bg-gray-800">
@@ -38,11 +56,27 @@ const Layout = () => {
                                 <Link to="/categories" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 dark:active:">Categories</Link>
                             </li>
                             <li>
-                                <Link to="/products-list" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Products</Link>
+                                <Link to="/products" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Products</Link>
                             </li>
-                            <li>
-                                <Link to="/login" className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</Link>
-                            </li>
+                            {
+                                !isSignedIn ? (
+                                    <li>
+                                        <Link to="/login" className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</Link>
+                                    </li>
+                                ) : null
+                            }
+                            {
+                                isSignedIn ? (
+                                    <li>
+                                        <Link to="/cart" 
+                                            className="block py-2 pr-4 pl-3 text-gray-700 hover:bg-gray-50 
+                                                md:hover:bg-transparent md:border-0 md:hover:text-blue-700 
+                                                md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 
+                                                dark:hover:text-white md:dark:hover:bg-transparent">Cart</Link>
+                                    </li>
+                                ) : null
+                            }
+                            
                         </ul>
                     </div>
                 </div>

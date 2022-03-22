@@ -1,7 +1,7 @@
 const Tag = (props) => {
-    const handleRemoveTag = (tag) => {
+    const removeTag = (tag) => {
         console.log(tag);
-        props.removeTag(tag);
+        props.handleRemoveTag(tag);
     }
     
     if(props.value !== "" && props.value !== undefined) {
@@ -10,23 +10,19 @@ const Tag = (props) => {
     else{    
         return (
             <div className="relative inline-block text-left ml-3">
-                {/* <div className="flex items-center rounded bg-white border-gray-200 px-1.5 sm:px-1.5 py-1.5  dark:bg-gray-200">
-                    {props.value}
+                <div className="flex items-center rounded bg-white border-gray-200 px-1.5 sm:px-1.5 py-1.5  dark:bg-gray-200">
+                    {props.tag}
                     <button
                         type="button"
                         className="group inline-flex justify-center text-base font-medium text-white hover:text-gray-900 flex"
                         id="menu-button"
                         aria-expanded="false"
                         aria-haspopup="true"
-                        onClick={() => handleRemoveTag(props.index)}
-                    >
-                        <img
-                            src="/assets/icons/cancel.svg"
-                            alt="cancel"
-                            className="h-5 w-5 ml-2"
-                        />
+                        onClick={() => removeTag(props.index)} 
+                        >
+                        <img src="/assets/icons/cancel.svg" alt="cancel" className="h-5 w-5 ml-2" />
                     </button>
-                </div> */}
+                </div>
             </div>
         );
     }

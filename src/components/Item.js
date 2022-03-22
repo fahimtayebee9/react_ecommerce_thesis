@@ -1,5 +1,9 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+import DB_ATTRIBUTES from "../database/attributes_db";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
 const Item = (props) => {
+    const [attributes, setAttributes] = useState(DB_ATTRIBUTES);
 
     return (
         <div className="group relative">
@@ -10,12 +14,12 @@ const Item = (props) => {
             <div className="mt-4 flex justify-between">
                 <div>
                     <h3 className="text-sm text-gray-700">
-                        <a href="#">
+                        <Link to={`/products/${props.product.id}`} >
                             <span aria-hidden="true" className="absolute inset-0"></span>
                             {props.product.name}
-                        </a>
+                        </Link>
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">{props.product.category}</p>
+                    <p className="mt-1 text-sm text-gray-500">{ attributes.category.find(cat => props.product.category === cat.uid).value}</p>
                 </div>
                 <p className="text-sm font-medium text-gray-900">BDT. {props.product.cost}</p>
             </div>
