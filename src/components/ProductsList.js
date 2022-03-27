@@ -1,89 +1,196 @@
+// import {CANCEL_SVG} from './../assets/icons/cancel.svg';
+
+import Tag from "./Tag";
 import Item from "./Item";
 import { useState, useEffect } from "react";
 import DB_PRODUCTS from "../database/products_db";
+import DB_USERS from "../database/user_db";
 import DB_ATTRIBUTES from "../database/attributes_db";
+import { isFocusable } from "@testing-library/user-event/dist/utils";
 
 const ProductsList = (props) => {
     // const [filter, setFilter] = useState([]);
     const [productsList, setProductsList] = useState(DB_PRODUCTS);
     const [attributes, setAttributes] = useState(DB_ATTRIBUTES);
+    const [user, setUser] = useState(DB_USERS);
+    const [tags, setTags] = useState([]);
 
-    const [tags, setTags] = useState({
-        category: null,
-        brand: null,
-        color: null,
-        size: null,
-        maxPrice: null,
-        minPrice: null,
-        year: null,
+    const [filter, setFilter] = useState({
+        type: "",
+        size: "",
+        year: "",
+        brand: "",
+        minPrice: "",
+        maxPrice: "",
     });
 
-    const [filterYear, setFilterYear] = useState(null);
-    const [filterMinPrice, setFilterMinPrice] = useState(null);
-    const [filterMaxPrice, setFilterMaxPrice] = useState(null);
-    const [filterCategory, setFilterCategory] = useState(null);
-    const [filterBrand, setFilterBrand] = useState(null);
-    const [filterSize, setFilterSize] = useState(null);
-    const [filterType, setFilterType] = useState(null);
+    useEffect(() => {
+        filteredProducts();
+    }, [filter]);
+
+    const filteredProducts = () => {
+        if (filter.type !== "") {
+            const filteredProducts = productsList.filter(
+                (product) => Number(product.type) === Number(filter.type)
+            );
+            setProductsList(filteredProducts);
+        } 
+        else if (filter.size !== "") {
+            let filteredProducts = [];
+            productsList.forEach((product) => {
+                product.size.forEach((size) => {
+                    if (Number(size) === Number(filter.size)) {
+                        filteredProducts.push(product);
+                    }
+                });
+            });
+            setProductsList(filteredProducts);
+        } 
+        else if (filter.year !== "") {
+            const filteredProducts = productsList.filter(
+                (product) => Number(product.year) === Number(filter.year)
+            );
+            setProductsList(filteredProducts);
+        } 
+        else if (filter.brand !== "") {
+            const filteredProducts = productsList.filter(
+                (product) => product.brand === filter.brand
+            );
+            setProductsList(filteredProducts);
+        }
+        else if (filter.minPrice !== "" && filter.maxPrice !== "") {
+            const filteredProducts = productsList.filter(
+                (product) =>
+                    product.price >= Number(filter.minPrice) &&
+                    product.price <= Number(filter.maxPrice)
+            );
+            setProductsList(filteredProducts);
+        }
+        else if (
+            filter.type !== "" &&
+            filter.size !== "" &&
+            filter.year !== "" &&
+            filter.brand !== "" &&
+            filter.minPrice !== "" &&
+            filter.maxPrice !== "" 
+        ) {
+            const filteredProducts = productsList.filter(
+                (product) =>
+                    Number(product.type) === Number(filter.type) &&
+                    product.size.includes(Number(filter.size)) &&
+                    Number(product.year) === Number(filter.year) &&
+                    Number(product.brand) === Number(filter.brand) &&
+                    Number(product.price) >= Number(filter.minPrice) &&
+                    Number(product.price) <= Number(filter.maxPrice) 
+            );
+            setProductsList(filteredProducts);
+        }
+        else {
+            setProductsList(DB_PRODUCTS);
+        }
+    };
 
     // FILTER PRODUCTS BY SIZE
     let filterBySize = (size) => {
-        setFilterSize(size);
-        setTags({...tags, size: size});
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                size: size,
+            };
+        });
     };
 
     // FILTER PRODUCTS BY TYPE
     const filterByType = (type) => {
-        setFilterType(type);
-        setTags({ ...tags, type: type });
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                type: type,
+            };
+        });
     };
 
     // // FILTER PRODUCTS BY YEAR
     let filterByYear = (year) => {
-        setFilterYear(year);
-        setTags({...tags, year: year});
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                year: year,
+            };
+        });
     };
 
     // // // FILTER PRODUCTS BY BRAND
     let filterByBrand = (brand) => {
-        setFilterBrand(brand);
-        setTags({...tags, brand: brand});
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                brand: brand,
+            };
+        });
     };
 
     // // // FILTER PRODUCTS BY SEARCH
-    // let filterBySearch = (search) => {
-        
-    // };
+    let filterBySearch = (search) => {
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                search: search,
+            };
+        });
+    };
 
     const filterByMinPrice = (minPrice) => {
-        setFilterMinPrice(minPrice);
-        setTags({...tags, minPrice: minPrice});
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                minPrice: minPrice,
+            };
+        });
     };
 
     const filterByMaxPrice = (maxPrice) => {
-        setFilterMaxPrice(maxPrice);
-        setTags({...tags, maxPrice: maxPrice});
+        setFilter((prevState) => {
+            return {
+                ...prevState,
+                maxPrice: maxPrice,
+            };
+        });
     };
 
-    useEffect(() => {
-        if(props.category){
-            const filteredProducts = productsList.filter((product) => Number(product.category) === Number(props.category));
-            setProductsList(filteredProducts);
-        }
-        if (filterType !== null || filterYear !== null || filterMinPrice !== null || filterMaxPrice !== null || filterBrand !== null || filterSize !== null) {
-            const filteredProducts = productsList.filter(
-                (product) => 
-                    Number(product.type) === Number(filterType) ||
-                    product.size.includes(Number(filterSize)) ||
-                    Number(product.date) === Number(filterYear) ||
-                    Number(product.price) >= Number(filterMinPrice) ||
-                    Number(product.price) <= Number(filterMaxPrice) ||
-                    Number(product.brand) === Number(filterBrand) ||
-                    Number(product.category) === Number(filterBrand) 
-            );
-            setProductsList(filteredProducts);
-        }
-    }, [filterType, filterSize, filterYear, filterBrand, filterMinPrice, filterMaxPrice, productsList, attributes, props.category]);
+    // // FILTER PRODUCTS BY ALL
+    // let filterByAll = () => {
+    //     if (
+    //         filterBrand !== null &&
+    //         filterSize !== null &&
+    //         filterType !== null &&
+    //         filterYear !== null
+    //     ) {
+    //         const filteredProducts = products.filter((product) => {
+    //             return (
+    //                 product.brand === filterBrand &&
+    //                 product.size.includes(filterSize) &&
+    //                 product.type === Number(filterType) &&
+    //                 product.date === filterYear
+    //             );
+    //         });
+
+    //         setProductsList(filteredProducts);
+    //     }
+    // };
+
+    // const filterByCategory = (category) => {
+    //     // setFilterCategory(category);
+    //     setFilter([...filter, category]);
+
+    //     const filteredProducts = products.filter((product) => {
+    //         return product.category === category;
+    //     });
+
+    //     setProductsList(filteredProducts);
+    // };
+
+    // const handleRemoveTag = (tag) => { };
 
     return (
         <div className="bg-white">
@@ -93,69 +200,15 @@ const ProductsList = (props) => {
                         New Arrivals
                     </h1>
 
-                    <div className="flex items-center relative" id="tag-container" >
-                        {
-                            filterType !== null && (
-                                <div className="tag-container px-1 py-1 mr-0.5 bg-orange-100">
-                                    <div className="group inline-flex justify-center text-base font-medium text-dark hover:text-gray-900 flex">
-                                        <span className="tag-text mr-1">
-                                            { tags.type && attributes.type.filter((item) => item.uid === Number(tags.type))[0].value }
-                                        </span>
-                                        <button className="tag-close" onClick={ () => {
-                                                setTags({ ...tags, type: null }); 
-                                                setFilterType(null);
-                                            }}>
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        
-                        {
-                            tags.size !== null && (
-                                <div className="tag-container px-1 py-1 mr-0.5 bg-orange-100">
-                                    <div className="group inline-flex justify-center text-base font-medium text-dark hover:text-gray-900 flex">
-                                        <span className="tag-text mr-1">
-                                            { tags.size && attributes.size.filter((item) => item.uid === Number(tags.size))[0].value }
-                                        </span>
-                                        <button className="tag-close" onClick={() => setTags({ ...tags, size: null })}>
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
-
-                        {
-                            tags.year !== null && (
-                                <div className="tag-container px-1 py-1 mr-0.5 bg-orange-100">
-                                    <div className="group inline-flex justify-center text-base font-medium text-dark hover:text-gray-900 flex">
-                                        <span className="tag-text mr-1">
-                                            { tags.year && attributes.year.filter((item) => item.uid === Number(tags.year))[0].value }
-                                        </span>
-                                        <button className="tag-close" onClick={() => setTags({ ...tags, year: null })}>
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
-
-                        {
-                            tags.brand !== null && (
-                                <div className="tag-container px-1 py-1 mr-0.5 bg-orange-100">
-                                    <div className="group inline-flex justify-center text-base font-medium text-dark hover:text-gray-900 flex">
-                                        <span className="tag-text mr-1">
-                                            { tags.brand && attributes.brands.filter((item) => item.uid === Number(tags.brand))[0].value }
-                                        </span>
-                                        <button className="tag-close" onClick={() => setTags({ ...tags, brands: null })}>
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            )
-                        }
+                    <div
+                        className="flex items-center relative"
+                        id="tag-container"
+                    >
+                        {/* { filter.type !== "" &&  <Tag value={filter.type}/> } */}
+                        {/* { filter.size !== "" &&  <Tag value={filter.size}/> } */}
+                        {/* { filter.year !== "" &&  <Tag value={filter.year}/> } */}
+                        {/* { filter.brand !== "" &&  <Tag value={filter.brand}/> } */}
+                        {/* { filter.price !== "" &&  <Tag value={filter.minPrice + ' - ' + filter.maxPrice} /> } */}
                     </div>
                 </div>
 
@@ -186,8 +239,16 @@ const ProductsList = (props) => {
                                         {Object.keys(attributes.type).map(
                                             (key) => {
                                                 return (
-                                                    <option key={ attributes.type[key].uid } 
-                                                            value={ attributes.type[key].uid}>
+                                                    <option
+                                                        key={
+                                                            attributes.type[key]
+                                                                .uid
+                                                        }
+                                                        value={
+                                                            attributes.type[key]
+                                                                .uid
+                                                        }
+                                                    >
                                                         {
                                                             attributes.type[key]
                                                                 .value
@@ -226,7 +287,7 @@ const ProductsList = (props) => {
                                                         }
                                                         value={
                                                             attributes.size[key]
-                                                                .uid
+                                                                .value
                                                         }
                                                     >
                                                         {
@@ -263,7 +324,7 @@ const ProductsList = (props) => {
                                                     <option
                                                         value={
                                                             attributes.year[key]
-                                                                .uid
+                                                                .value
                                                         }
                                                         key={
                                                             attributes.year[key]
@@ -298,12 +359,25 @@ const ProductsList = (props) => {
                                         <option defaultValue>
                                             Open this select menu
                                         </option>
-                                        {
-                                            Object.keys(attributes.brands).map( (key) => {
+                                        {Object.keys(attributes.brands).map(
+                                            (key) => {
                                                 return (
-                                                    <option value={ attributes.brands[key].uid} key={ attributes.brands[key].uid } >
+                                                    <option
+                                                        value={
+                                                            attributes.brands[
+                                                                key
+                                                            ].value
+                                                        }
+                                                        key={
+                                                            attributes.brands[
+                                                                key
+                                                            ].uid
+                                                        }
+                                                    >
                                                         {
-                                                            attributes.brands[key].value
+                                                            attributes.brands[
+                                                                key
+                                                            ].value
                                                         }
                                                     </option>
                                                 );
@@ -349,11 +423,14 @@ const ProductsList = (props) => {
                             {   
                                 productsList && productsList.length > 0 ? (
                                     Object.keys(productsList).map((key) => {
-                                        return ( <Item key={productsList[key].id} product={productsList[key]} /> );
+                                        console.log(productsList.length);
+                                        return (
+                                            <Item key={productsList[key].id} product={productsList[key]} />
+                                        );
                                     })
                                 ) : (
                                     <div className="text-center">
-                                        <h1 className="text-gray-500 text-xl console.log-danger">
+                                        <h1 className="text-gray-500 text-xl">
                                             No Products Found
                                         </h1>
                                     </div>
