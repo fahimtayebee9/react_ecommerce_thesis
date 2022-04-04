@@ -66,13 +66,16 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} />
-                        <Route path="categories" element={<Categories />} />
+                        <Route path="categories" element={<Categories/>} />
                         <Route path="login" element={<SignIn />} />
-                        <Route path="products" element={<ProductsList />} />
-                        <Route path="categories/:id" element={<SingleCategory />} />
-                        <Route path="/products/:id" element={<ProductDetail addToCart={addToCart}/>} />
+                        <Route path="products" element={<ProductsList crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}]}/>} />
+                        <Route path="categories/:id" element={<SingleCategory crumbs={[{name: "Home", url: '/'}, {name: "Categories", url: '/categories'}]}/>} />
+                        <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}, {name: null, url: '/'}]}/>} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout/>}/>
+                        <Route path="/search/:query" element={<ProductsList crumbs={[
+                                {name: "Home", url: '/'}, 
+                                {name: "Search", url: '/search'}]}/>} />
                     </Route>
                 </Routes>
             </BrowserRouter>

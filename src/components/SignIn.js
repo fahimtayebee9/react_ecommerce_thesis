@@ -20,7 +20,7 @@ const SignIn = () => {
         if (user.length > 0) {
             localStorage.setItem("token", user[0].token);
             setUser(user[0]);
-            navigate("/cart");
+            navigate("/");
         } else {
             localStorage.removeItem("token");
             setUser(null);

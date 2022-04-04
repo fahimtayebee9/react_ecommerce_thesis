@@ -1,8 +1,8 @@
 const DB_ATTRIBUTES = {
-    "type" : [
-        {"value" : "Men", "uid" : 1}, 
-        {"value" : "Women", "uid" : 2},
-        {"value" : "Kids", "uid" : 3} 
+    "category" : [
+        {"value" : "Men", "uid" : 1, "image": "/assets/images/91125A81_1_2.jpg"}, 
+        {"value" : "Women", "uid" : 2, "image": "/assets/images/6515541.png"},
+        {"value" : "Kids", "uid" : 3, "image": "/assets/images/3214970.png"} 
     ],
     "size" : [
         {"value" : 36, "uid" : 11},
@@ -14,9 +14,10 @@ const DB_ATTRIBUTES = {
         {"value" : 42, "uid" : 17},
     ],
     "brands" : [
-        {value : "Venturini", "uid" : 31},
-        {"value" : "Maverick", "uid" : 32},
-        {"value" : "Apex", "uid" : 33}
+        {value : "Venturini", uid : 31},
+        {value : "Maverick", uid : 32},
+        {value : "Apex", uid : 33},
+        {value : "Bata Red Label", uid : 34},
     ],
     "year" : [
         {"value" : 2015, "uid" : 21},
@@ -26,13 +27,6 @@ const DB_ATTRIBUTES = {
         {"value" : 2019, "uid" : 25},
         {"value" : 2020, "uid" : 26},
         {"value" : 2021, "uid" : 27},
-    ],
-    "category" : [
-        {value : "CASUAL SHOES", "uid" : 41, "image": "/assets/images/91125A81_1_2.jpg"},
-        {"value" : "CASUAL SHIRTS", "uid" : 42, "image": "/assets/images/09602A42_1.jpg"},
-        {"value" : "FORMAL SHIRTS", "uid" : 43, "image": "/assets/images/09602A42_1.jpg"},
-        {"value" : "FORMAL SHOES", "uid" : 44, "image": "/assets/images/09602A42_1.jpg"},
-        {"value" : "FORMAL PANTS", "uid" : 45, "image": "/assets/images/09602A42_1.jpg"},
     ],
 }
 

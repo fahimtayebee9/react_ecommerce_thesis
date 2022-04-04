@@ -21,7 +21,7 @@ const Item = (props) => {
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">{ attributes.category.find(cat => props.product.category === cat.uid).value}</p>
                 </div>
-                <p className="text-sm font-medium text-gray-900">BDT. {props.product.cost}</p>
+                <p className="text-sm font-medium text-gray-900">BDT. {props.product.price}</p>
             </div>
         </div>
     );
