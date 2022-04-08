@@ -8,38 +8,21 @@ import Breadcrumb from "./Breadcrumb";
 const ProductDetail = (props) => {
     const id = useParams();
     const product = DB_PRODUCTS.filter((product) => Number(product.id) === Number(id.id))[0];
-    const [crumbs, setCrumbs] = useState(props.crumbs);
+    // const [crumbs, setCrumbs] = useState(props.crumbs);
     const [attributes, setAttributes] = useState(DB_ATTRIBUTES);
 
     const addToCart = (product) => {
         props.addToCart(product);
     }
     
-    useEffect(() => {
-        setCrumbs([
-            {
-                name: "Home",
-                link: "/",
-                active: false
-            },
-            {
-                name: "Products",
-                link: "/products",
-                active: false
-            },
-            {
-                name: product.name,
-                link: `/products/${product.id}`,
-                active: true
-            }
-        ]);
-    }, [product]);
-
     return (
         <section className="text-gray-700 body-font overflow-hidden bg-white">
             <div className="container px-5 py-24 mx-auto">
                 <div className="lg:w-4/5 mx-auto breadcrumb block">
-                    <Breadcrumb crumbs={ props.crumbs } selected={ props.selected } />
+                    <Breadcrumb crumbs={ [
+                                {name: "Home", url: '/'}, 
+                                {name: "Products", url: '/products'}, 
+                                {name: product.name, url: '/'}] } selected={ props.selected } />
                 </div>
                 <div className="lg:w-4/5 mx-auto flex flex-wrap">
                     <img alt="ecommerce" className="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"

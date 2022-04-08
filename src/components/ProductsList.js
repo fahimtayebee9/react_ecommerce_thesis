@@ -10,6 +10,8 @@ import Breadcrumb from "./Breadcrumb";
 import { useParams } from "react-router-dom";
 
 const ProductsList = (props) => {
+    const {query} = useParams();
+
     const [productsList, setProductsList] = useState((props.category) ? 
             DB_PRODUCTS.filter(product => Number(product.category) === Number(props.category)) : 
             DB_PRODUCTS);
@@ -157,6 +159,7 @@ const ProductsList = (props) => {
             });
         }
     };
+
 
     return (
         <div className="bg-white">
@@ -393,6 +396,52 @@ const ProductsList = (props) => {
                                             <Item key={product.id} product={product} />
                                         );
                                     }) 
+                                : (filter.minPrice !== "") ? 
+                                    productsList.filter(
+                                        (product) => {
+                                            if(Number(product.price) >= Number(filter.minPrice)){
+                                                return product;
+                                            }
+                                        }).map((product) => {
+                                        return (
+                                            <Item key={product.id} product={product} />
+                                        );
+                                    }) 
+                                : (filter.maxPrice !== "") ? 
+                                    productsList.filter(
+                                        (product) => {
+                                            if(Number(product.price) <= Number(filter.maxPrice)){
+                                                return product;
+                                            }
+                                        }).map((product) => {
+                                        return (
+                                            <Item key={product.id} product={product} />
+                                        );
+                                    }) 
+                                : (filter.minPrice !== "" && filter.maxPrice !== "") ? 
+                                    productsList.filter(
+                                        (product) => {
+                                            if(Number(product.price) >= Number(filter.minPrice) && 
+                                                    Number(product.price) <= Number(filter.maxPrice)){
+                                                return product;
+                                            }
+                                        }).map((product) => {
+                                        return (
+                                            <Item key={product.id} product={product} />
+                                        );
+                                    }) 
+                                : (query !== "" && query !== null && query !== undefined) ? 
+                                    productsList.filter(
+                                        (product) => {
+                                            if(product.name.toLowerCase().includes(query.toLowerCase()) ||
+                                                    product.description.toLowerCase().includes(query.toLowerCase())){
+                                                return product;
+                                            }
+                                        }).map((product) => {
+                                        return (
+                                            <Item key={product.id} product={product} />
+                                        );
+                                    })
                                 : productsList && productsList.length > 0 ? (
                                     Object.keys(productsList).map((key) => {
                                         return (

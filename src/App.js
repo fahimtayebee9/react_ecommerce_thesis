@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import Home from "./components/Home";
 import Categories from "./components/Categories";
 import SignIn from "./components/SignIn";
@@ -15,9 +15,19 @@ import SingleCategory from "./components/SingleCategory";
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
+import DB_PRODUCTS from "./database/products_db";
 
 function App() {
     const [cartList, setCartList] = useState(localStorage.getItem("cartList") ? JSON.parse(localStorage.getItem("cartList")) : []);
+    const { id } = useParams();
+    const [crumbs, setCrumbs] = useState([
+        {name: "Home", url: '/'}, 
+        {name: "Products", url: '/products'}, 
+        {name: null, url: '/'}]);
+
+    // console.log(DB_PRODUCTS.find( product => Number(product.id) === Number(id)));
+
+    // console.log(id);
 
     const addToCart = (product) => {
         if(cartList.filter(cart => cart.product_id === product.id).length > 0){
@@ -60,6 +70,28 @@ function App() {
         }
     }, []);
 
+    const removeFromCart = (product) => {
+        let cart = cartList.filter(cart => cart.product_id !== product.id);
+        setCartList([...cart]);
+        localStorage.setItem("cartList", JSON.stringify(cart));
+    };
+
+    const updateCart = (product) => {
+        let cart = cartList.filter(cart => cart.product_id !== product.id);
+        cart.push({
+            product_id: product.id,
+            quantity: product.quantity,
+            key: product.id + Math.random()
+        });
+        setCartList([...cart]);
+        localStorage.setItem("cartList", JSON.stringify(cart));
+    };
+
+    const clearCart = () => {
+        setCartList([]);
+        localStorage.setItem("cartList", JSON.stringify([]));
+    };
+
     return (
         <div className="App">
             <BrowserRouter>
@@ -70,12 +102,13 @@ function App() {
                         <Route path="login" element={<SignIn />} />
                         <Route path="products" element={<ProductsList crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}]}/>} />
                         <Route path="categories/:id" element={<SingleCategory crumbs={[{name: "Home", url: '/'}, {name: "Categories", url: '/categories'}]}/>} />
-                        <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}, {name: null, url: '/'}]}/>} />
+                        <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} 
+                            crumbs={crumbs}/>} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout/>}/>
                         <Route path="/search/:query" element={<ProductsList crumbs={[
                                 {name: "Home", url: '/'}, 
-                                {name: "Search", url: '/search'}]}/>} />
+                                {name: "Search", url: `/search`}]}/>} />
                     </Route>
                 </Routes>
             </BrowserRouter>
