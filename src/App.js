@@ -22,12 +22,7 @@ function App() {
     const { id } = useParams();
     const [crumbs, setCrumbs] = useState([
         {name: "Home", url: '/'}, 
-        {name: "Products", url: '/products'}, 
-        {name: null, url: '/'}]);
-
-    // console.log(DB_PRODUCTS.find( product => Number(product.id) === Number(id)));
-
-    // console.log(id);
+        {name: "Products", url: '/products'}]);
 
     const addToCart = (product) => {
         if(cartList.filter(cart => cart.product_id === product.id).length > 0){
@@ -100,13 +95,16 @@ function App() {
                         <Route index element={<Home />} />
                         <Route path="categories" element={<Categories/>} />
                         <Route path="login" element={<SignIn />} />
-                        <Route path="products" element={<ProductsList crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}]}/>} />
-                        <Route path="categories/:id" element={<SingleCategory crumbs={[{name: "Home", url: '/'}, {name: "Categories", url: '/categories'}]}/>} />
+                        <Route path="products" element={<ProductsList setCrumbs={setCrumbs} crumbs={[{name: "Home", url: '/'}, {name: "Products", url: '/products'}]}/>} />
+                        <Route path="categories/:id" element={<SingleCategory setCrumbs={setCrumbs} crumbs={[{name: "Home", url: '/'}, {name: "Categories", url: '/categories'}]}/>} />
                         <Route path="/products/:id" element={<ProductDetail addToCart={addToCart} 
-                            crumbs={crumbs}/>} />
-                        <Route path="/cart" element={<Cart />} />
+                            crumbs={crumbs} setCrumbs={setCrumbs}/>} />
+                        <Route path="/cart" element={<Cart updateCart={updateCart} clearCart={clearCart} removeFromCart={removeFromCart} />} />
                         <Route path="/checkout" element={<Checkout/>}/>
-                        <Route path="/search/:query" element={<ProductsList crumbs={[
+                        <Route path="/search/:query" element={<ProductsList setCrumbs={setCrumbs} crumbs={[
+                                {name: "Home", url: '/'}, 
+                                {name: "Search", url: `/search`}]}/>} />
+                            <Route path="/search" element={<ProductsList setCrumbs={setCrumbs} crumbs={[
                                 {name: "Home", url: '/'}, 
                                 {name: "Search", url: `/search`}]}/>} />
                     </Route>

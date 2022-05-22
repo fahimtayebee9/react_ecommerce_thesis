@@ -12,12 +12,20 @@ import { useParams } from "react-router-dom";
 const ProductsList = (props) => {
     const {query} = useParams();
 
+    // SETTING PRODUCTS LIST
     const [productsList, setProductsList] = useState((props.category) ? 
             DB_PRODUCTS.filter(product => Number(product.category) === Number(props.category)) : 
             DB_PRODUCTS);
 
+    // SETTING ATTRIBUTES LIST
     const [attributes, setAttributes] = useState(DB_ATTRIBUTES);
     const [user, setUser] = useState(DB_USERS);
+
+    // DEFAULT CRUMBS
+    const [search_crumbs, setSearchCrumbs] = useState([
+        {name: "Home", url: '/'},
+        {name: "Search", url: '/search'},
+    ]);
 
     const [tags, setTags] = useState({
         category: "",
@@ -28,6 +36,7 @@ const ProductsList = (props) => {
         maxPrice: "",
     });
 
+    // FILTER PRODUCT USING CATEGORY, SIZE, YEAR, BRAND, MIN PRICE, MAX PRICE
     const [filter, setFilter] = useState({
         category: "",
         size: "",
@@ -38,6 +47,7 @@ const ProductsList = (props) => {
     });
 
     useEffect(() => {
+        // CHECKING IF THERE IS A CATAGORY IN URL
         if(props.category){
             setProductsList(DB_PRODUCTS.filter(product => Number(product.category) === Number(props.category)));
             setTags((prevState) => {
@@ -47,12 +57,37 @@ const ProductsList = (props) => {
                 };
             });
         }
-    }, [filter, props.category, productsList]);
+
+        // CHECKING IF THERE IS A QUERY
+        if(query){
+            let queryArray = null;
+            let count = 0;
+            
+            // CHECKING IF THERE IS A QUERY WITH A SPACE
+            if(query.includes(" ")){
+                queryArray = query.split(" ");
+            }else{
+                queryArray = [query];
+            }
+            
+            // LOOPING THROUGH THE QUERY ARRAY AND PUSHING THE QUERY TO THE SEARCH CRUMBS
+            while(count < queryArray.length){
+                search_crumbs.push({name: queryArray[count], url: '/search/' + queryArray[count]});
+                console.log(queryArray[count], count);
+                count++;
+            }
+        }
+    }, [filter, props.category, productsList, query, search_crumbs]);
 
     
 
     // FILTER PRODUCTS BY SIZE
     let filterBySize = (size) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
+
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -63,6 +98,11 @@ const ProductsList = (props) => {
 
     // FILTER PRODUCTS BY category
     const filterBycategory = (category) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
+
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -71,8 +111,13 @@ const ProductsList = (props) => {
         });
     };
 
-    // // FILTER PRODUCTS BY YEAR
+    // FILTER PRODUCTS BY YEAR
     let filterByYear = (year) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
+
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -81,8 +126,13 @@ const ProductsList = (props) => {
         });
     };
 
-    // // // FILTER PRODUCTS BY BRAND
+    // FILTER PRODUCTS BY BRAND
     let filterByBrand = (brand) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
+
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -91,7 +141,12 @@ const ProductsList = (props) => {
         });
     };
 
+    // FILTER PRODUCTS BY MIN PRICE
     const filterByMinPrice = (minPrice) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -100,7 +155,12 @@ const ProductsList = (props) => {
         });
     };
 
+    // FILTER PRODUCTS BY MAX PRICE
     const filterByMaxPrice = (maxPrice) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
         setFilter((prevState) => {
             return {
                 ...prevState,
@@ -109,7 +169,12 @@ const ProductsList = (props) => {
         });
     };
 
+    // FILTER PRODUCTS BY TAGS
     const handleRemoveTag = (tag) => {
+        setSearchCrumbs([
+            {name: "Home", url: '/'},
+            {name: "Products", url: '/products'}
+        ]);
         if(tag === "category"){
             setFilter((prevState) => {
                 return {
@@ -160,12 +225,20 @@ const ProductsList = (props) => {
         }
     };
 
+    // UPDATE CRUMBS ON CRUMB CLICK
+    const handleCrumbsClick = (crumb) => {
+        search_crumbs.splice(search_crumbs.indexOf(crumb) + 1, search_crumbs.length - (search_crumbs.indexOf(crumb) + 1)); //index , 
+    };
 
     return (
         <div className="bg-white">
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="breadcrumb block">
-                    <Breadcrumb crumbs={ props.crumbs } selected={ props.selected } />
+                    {
+                        (query !== "" && query !== null && query !== undefined) ? 
+                            <Breadcrumb handleCrumbsClick={handleCrumbsClick} crumbs={ search_crumbs } query={query} selected={ props.selected } /> : 
+                            <Breadcrumb handleCrumbsClick={handleCrumbsClick} crumbs={ props.crumbs } selected={ props.selected } />
+                    }
                 </div>
                 <div className="relative z-10 flex items-baseline justify-between pt-5 pb-6 border-b border-gray-200">
                     
@@ -181,10 +254,7 @@ const ProductsList = (props) => {
                     </div>
                 </div>
 
-                <section
-                    aria-labelledby="products-heading"
-                    className="pt-6 pb-24"
-                >
+                <section aria-labelledby="products-heading" className="pt-6 pb-24">
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
                         <form className="hidden lg:block">
                             <h3 className="py-3 bg-white w-full flex items-center justify-between text-sm text-gray-400 hover:text-gray-500">
@@ -395,6 +465,18 @@ const ProductsList = (props) => {
                                         return (
                                             <Item key={product.id} product={product} />
                                         );
+                                    })
+                                : (filter.minPrice !== "" && filter.maxPrice !== "") ? 
+                                    productsList.filter(
+                                        (product) => {
+                                            if(Number(product.price) >= Number(filter.minPrice) && 
+                                                    Number(product.price) <= Number(filter.maxPrice)){
+                                                return product;
+                                            }
+                                        }).map((product) => {
+                                        return (
+                                            <Item key={product.id} product={product} />
+                                        );
                                     }) 
                                 : (filter.minPrice !== "") ? 
                                     productsList.filter(
@@ -417,19 +499,7 @@ const ProductsList = (props) => {
                                         return (
                                             <Item key={product.id} product={product} />
                                         );
-                                    }) 
-                                : (filter.minPrice !== "" && filter.maxPrice !== "") ? 
-                                    productsList.filter(
-                                        (product) => {
-                                            if(Number(product.price) >= Number(filter.minPrice) && 
-                                                    Number(product.price) <= Number(filter.maxPrice)){
-                                                return product;
-                                            }
-                                        }).map((product) => {
-                                        return (
-                                            <Item key={product.id} product={product} />
-                                        );
-                                    }) 
+                                    })
                                 : (query !== "" && query !== null && query !== undefined) ? 
                                     productsList.filter(
                                         (product) => {
@@ -448,6 +518,12 @@ const ProductsList = (props) => {
                                             <Item key={productsList[key].id} product={productsList[key]} />
                                         );
                                     })
+                                ) : (query === "" && query === null && query === undefined) ? (
+                                    <div className="text-center">
+                                        <h1 className="text-gray-500 text-xl py-5 px-5">
+                                            No Products Found
+                                        </h1>
+                                    </div>
                                 ) : (
                                     <div className="text-center">
                                         <h1 className="text-gray-500 text-xl py-5 px-5">

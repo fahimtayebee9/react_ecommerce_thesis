@@ -11,18 +11,53 @@ const ProductDetail = (props) => {
     // const [crumbs, setCrumbs] = useState(props.crumbs);
     const [attributes, setAttributes] = useState(DB_ATTRIBUTES);
 
+    // DEFAULT CRUMBS
+    const [search_crumbs, setSearchCrumbs] = useState([
+        {name: "Home", url: '/'},
+        {name: "Products", url: '/products'},
+    ]);
+
     const addToCart = (product) => {
         props.addToCart(product);
     }
+
+    useEffect(() => {
+        // CHECKING IF THERE IS A QUERY
+        if(product){
+            let queryArray = null;
+            let count = 0;
+            let newCrumbs = [
+                {name: "Home", url: '/'},
+                {name: "Products", url: '/products'}
+            ];
+
+            // CHECKING IF THERE IS A QUERY WITH A SPACE
+            if(product.name.includes(" ")){
+                queryArray = product.name.split(" ");
+            }else{
+                queryArray = [product.name];
+            }
+            
+            // LOOPING THROUGH THE QUERY ARRAY AND PUSHING THE QUERY TO THE SEARCH CRUMBS
+            while(count < queryArray.length){
+                newCrumbs.push({name: queryArray[count], url: '/search/' + queryArray[count]});
+                setSearchCrumbs(newCrumbs);
+                count++;
+            }
+        }
+    }, [product.name, search_crumbs, setSearchCrumbs, product]);
+
+    // UPDATE CRUMBS ON CRUMB CLICK
+    const handleCrumbsClick = (crumb) => {
+        console.log(crumb);
+        search_crumbs.splice(search_crumbs.indexOf(crumb) + 1, search_crumbs.length - (search_crumbs.indexOf(crumb) + 1));
+    };
     
     return (
         <section className="text-gray-700 body-font overflow-hidden bg-white">
             <div className="container px-5 py-24 mx-auto">
                 <div className="lg:w-4/5 mx-auto breadcrumb block">
-                    <Breadcrumb crumbs={ [
-                                {name: "Home", url: '/'}, 
-                                {name: "Products", url: '/products'}, 
-                                {name: product.name, url: '/'}] } selected={ props.selected } />
+                    <Breadcrumb handleCrumbsClick={handleCrumbsClick} crumbs={ search_crumbs } selected={ props.selected } />
                 </div>
                 <div className="lg:w-4/5 mx-auto flex flex-wrap">
                     <img alt="ecommerce" className="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"

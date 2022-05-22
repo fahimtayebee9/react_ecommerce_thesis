@@ -9,8 +9,12 @@ const Layout = () => {
     let navigate = useNavigate();
 
     const handleSearch = (e) => {
-        if(e.target.value.length >= 0){
+        if(e.target.value !== ""){
             navigate("/search/" + e.target.value);
+        }
+        else{
+            e.target.value = "";
+            navigate("/");
         }
     };
 

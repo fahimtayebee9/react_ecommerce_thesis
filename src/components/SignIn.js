@@ -21,6 +21,7 @@ const SignIn = () => {
             localStorage.setItem("token", user[0].token);
             setUser(user[0]);
             navigate("/");
+            window.location.reload(false);
         } else {
             localStorage.removeItem("token");
             setUser(null);

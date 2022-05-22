@@ -1,9 +1,22 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Breadcrumb = (props) => {
     function isLast(index) {
         return index === props.crumbs.length - 1;
     }
+
+    const onClick = (crumb) => {
+        props.handleCrumbsClick(crumb);
+    };
+
+    useEffect(() => {
+        if (props.crumbs.length > 0) {
+            console.log(props.crumbs);
+            document.title = props.crumbs[props.crumbs.length - 1].name;
+        }
+    }, [props.crumbs]);
+
     
     return (
         <nav className="flex py-8" aria-label="Breadcrumb">
@@ -22,29 +35,17 @@ const Breadcrumb = (props) => {
                                         d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 
                                             1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
                                 </svg>;
-                            if(key === props.crumbs.length - 1){
-                                return (
-                                    <li key={key} className="inline-flex items-center">
-                                        <div className="flex items-center">
-                                            {svg}
+                            return (
+                                <li key={key} className="inline-flex items-center">
+                                    <div className="flex items-center">
+                                        {svg}
+                                        <Link onClick={() => {onClick(props.crumbs[key]);}} to={props.crumbs[key].url} className={ `ml-1 text-medium font-medium text-gray-700 hover:text-gray-900 md:ml-2 
+                                            dark:text-gray-400 dark:hover:text-purple`}>
                                             {props.crumbs[key].name}
-                                        </div>
-                                    </li>
-                                );
-                            }
-                            else{
-                                return (
-                                    <li key={key} className="inline-flex items-center">
-                                        <div className="flex items-center">
-                                            {svg}
-                                            <Link to={props.crumbs[key].url} className={ `ml-1 text-medium font-medium text-gray-700 hover:text-gray-900 md:ml-2 
-                                                dark:text-gray-400 dark:hover:text-purple`}>
-                                                {props.crumbs[key].name}
-                                            </Link>
-                                        </div>
-                                    </li>
-                                );
-                            }
+                                        </Link>
+                                    </div>
+                                </li>
+                            );
                         })
                     ) : ""
                 }
